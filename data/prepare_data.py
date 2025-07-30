@@ -60,4 +60,11 @@ print(f"Taille des images: {X.shape[1:]} (doit être {IMG_SIZE} + (3,))")
 # le deuxième tableau contient le nombre d'occurrences de chaque label (par ex [1500, 1500])
 print(f"Exemple de labels: {np.unique(y, return_counts=True)}")
 
+# Sauvegarder les données prétraitées
+
+# les fichiers .npy sont des fichiers binaires optimisés pour stocker des tableaux numpy
+np.save("data/X.npy", X)
+np.save("data/y.npy", y)
+print("Données sauvegardées dans data/X.npy et data/y.npy")
+
 # on passe par une liste avant de convertir en tableau numpy car un tableau a une forme fixe, or ici on ne connaît pas le nombre d'images

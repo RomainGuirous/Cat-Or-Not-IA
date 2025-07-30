@@ -1,22 +1,30 @@
 import numpy as np
 from tensorflow import keras
-from tensorflow.keras import layers
+from keras import layers
 from sklearn.model_selection import train_test_split
 
 # 1. Charger les données prétraitées
-# (Supposons que X et y sont déjà créés par prepare_data.py)
-# Ici, on les chargerait depuis un fichier .npy ou on les importe directement si dans le même script
-# X = ...
-# y = ...
+X = np.load("data/X.npy")
+y = np.load("data/y.npy")
 
 # 2. Séparer en train/test
-# On sépare les données pour évaluer la performance du modèle sur des images jamais vues
+
+# on sépare les données en 2 parties : 80% pour l'entraînement et 20% pour le test (de manière aléatoire)
+# le test permet d'évaluer la performance du modèle sur des images jamais vues
+# la norme est de garder 80% des données pour l'entraînement et 20% pour le test
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
 
 # 3. Définir le modèle
+
 # On crée un réseau de neurones convolutif simple (CNN) adapté à la classification d'images
+
+# Conv2D: extraction de motifs
+# MaxPooling2D: résumé/compacité
+# Flatten: transforme la matrice en vecteur (liste de nombres)
+# Dense: combine toutes les informations extraites pour apprendre des relations plus globales.
+# Dense(1, activation="sigmoid"): donne une seule valeur entre 0 et 1, probabilité d'être un chat
 model = keras.Sequential(
     [
         layers.Conv2D(32, (3, 3), activation="relu", input_shape=X_train.shape[1:]),

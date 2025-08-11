@@ -209,3 +209,9 @@ __marimo__/
 # images
 data/cat_dog/
 data/cat_dog.csv
+
+# Ignorer les fichiers de données générés
+*.npy
+
+# Ignorer les modèles sauvegardés
+*.keras

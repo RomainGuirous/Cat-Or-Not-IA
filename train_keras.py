@@ -3,6 +3,7 @@ import numpy as np
 import keras
 from keras import layers
 from sklearn.model_selection import train_test_split
+from keras.callbacks import LambdaCallback
 
 
 def load_data(x_path="data/X.npy", y_path="data/y.npy"):
@@ -33,7 +34,8 @@ def build_model(input_shape):
     # Dense(1, activation="sigmoid"): donne une seule valeur entre 0 et 1, probabilité d'être un chat
     model = keras.Sequential(
         [
-            layers.Conv2D(32, (3, 3), activation="relu", input_shape=input_shape),
+            layers.Input(shape=input_shape),
+            layers.Conv2D(32, (3, 3), activation="relu"),
             layers.MaxPooling2D(2, 2),
             layers.Conv2D(64, (3, 3), activation="relu"),
             layers.MaxPooling2D(2, 2),
@@ -61,6 +63,13 @@ def build_model(input_shape):
     model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
     return model
 
+# Callback pour afficher des messages personnalisés lors du .fit
+def on_epoch_end(epoch, logs):
+    print(f"\n--- Époque {epoch + 1} terminée ---")
+    print(f"  - Précision entraînement (accuracy) : {logs['accuracy']:.2f}")
+    print(f"  - Perte entraînement (loss) : {logs['loss']:.4f}")
+    print(f"  - Précision validation (val_accuracy) : {logs['val_accuracy']:.2f}")
+    print(f"  - Perte validation (val_loss) : {logs['val_loss']:.4f}")
 
 def main():
     # 1. Charger les données prétraitées
@@ -74,11 +83,18 @@ def main():
     model = build_model(input_shape=X_train.shape[1:])
 
     # 4-5. Entraîner le modèle et valider
+
+    # personnaliser les messages de fin d'époque
+    custom_callback = LambdaCallback(on_epoch_end=on_epoch_end)
+    
     # epochs: nombre d'itérations sur l'ensemble des données d'entraînement
     # validation_data: données pour évaluer le modèle pendant l'entraînement
-    model.fit(X_train, y_train, epochs=10, validation_data=(X_test, y_test))
+    # callbacks: fonctions appelées à la fin de chaque époque
+    model.fit(X_train, y_train, epochs=10, validation_data=(X_test, y_test), callbacks=[custom_callback])
 
     # 6. Évaluer le modèle
+    
+    
     # On teste le modèle sur les données de test pour voir sa performance
     # loss: mesure la performance du modèle (relative à la fonction de perte, loss dans model.compile)
     # acc: proportion de prédictions correctes (relatif au paramètre metrics dans model.compile)

@@ -3,6 +3,7 @@ import os.path as osp
 import pandas as pd
 import numpy as np
 from PIL import Image
+from tqdm import tqdm
 
 # Paramètres
 IMG_SIZE = (64, 64)  # Taille à laquelle on redimensionne toutes les images
@@ -24,9 +25,10 @@ y = []  # Labels (0 = dog, 1 = cat)
 
 # 3. Parcourir chaque ligne du CSV
 
+# .iterrows() permet de parcourir les lignes d'un DataFrame
 # idx: l'index de la ligne => int
 # row: une Series contenant les données de la ligne (index: ['image', 'labels'])
-for idx, row in df.iterrows():
+for idx, row in tqdm(df.iterrows(), total=len(df), desc="Traitement des images"):
     img_filename = row["image"]  # Nom du fichier image
     label = row["labels"]  # Label (0 = dog, 1 = cat)
     img_path = osp.join(IMG_DIR, img_filename)

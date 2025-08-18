@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from keras.callbacks import LambdaCallback
 
 
-def load_data(x_path="data/X.npy", y_path="data/y.npy"):
+def load_data(x_path="data/transformed_data/X.npy", y_path="data/transformed_data/y.npy"):
     if not os.path.exists(x_path) or not os.path.exists(y_path):
         raise FileNotFoundError(
             f"Données manquantes. Lance d'abord data/prepare_data.py pour générer {x_path} et {y_path}."
@@ -102,7 +102,7 @@ def main():
     print(f"Test accuracy: {acc:.2f}")
 
     # 7. Sauvegarder le modèle
-    model.save("cat_or_not_model.keras")
+    model.save("data/transformed_data/cat_or_not_model.keras")
 
     # Chaque étape est commentée dans le code pour expliquer son utilité.
 

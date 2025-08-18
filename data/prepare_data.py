@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from PIL import Image
 from tqdm import tqdm
+from utils import pil_to_array
 
 # Paramètres
 IMG_SIZE = (64, 64)  # Taille à laquelle on redimensionne toutes les images
@@ -35,18 +36,9 @@ for idx, row in tqdm(df.iterrows(), total=len(df), desc="Traitement des images")
     try:
         # a. Ouvrir l'image
 
-        # Convertir en RGB pour uniformiser les canaux de couleur
-        # retourne un objet PIL Image, conçu pour être facilement manipulé
-        img = Image.open(img_path).convert("RGB")
-
-        # b. Redimensionner
-        img = img.resize(IMG_SIZE)
-
-        # c. Convertir en tableau numpy et normaliser
-
-        #transforme l'image en tableau numpy et normalise les valeurs entre 0 et 1 (les valeurs de pixel sont entre 0 et 255)
-        # donne un tableau de 4096 (64x64) triplets de valeurs entre 0 et 1
-        img_array = np.array(img) / 255.0
+        # Utiliser la fonction partagée pil_to_array pour ouvrir, redimensionner et normaliser
+        pil = Image.open(img_path)
+        img_array = pil_to_array(pil, size=IMG_SIZE)
         X.append(img_array)
 
         # d. Ajouter le label (déjà 0 ou 1)
@@ -66,7 +58,17 @@ print(f"Taille des images: {X.shape[1:]} (doit être {IMG_SIZE} + (3,))")
 # le deuxième tableau contient le nombre d'occurrences de chaque label (par ex [1500, 1500])
 print(f"Exemple de labels: {np.unique(y, return_counts=True)}")
 
+
 def save_arrays(x_out="data/X.npy", y_out="data/y.npy"):
+    """Sauvegarde les tableaux X et y dans des fichiers .npy.
+    
+    Args:
+        x_out (str): Chemin du fichier de sortie pour les images.
+        y_out (str): Chemin du fichier de sortie pour les labels.
+    
+    Returns:
+        None
+    """
     # les fichiers .npy sont des fichiers binaires optimisés pour stocker des tableaux numpy
     # Crée le dossier si nécessaire
     out_dir = osp.dirname(x_out)
@@ -75,6 +77,7 @@ def save_arrays(x_out="data/X.npy", y_out="data/y.npy"):
     np.save(x_out, X)
     np.save(y_out, y)
     print(f"Données sauvegardées dans {x_out} et {y_out}")
+
 
 # on passe par une liste avant de convertir en tableau numpy car un tableau a une forme fixe, or ici on ne connaît pas le nombre d'images
 

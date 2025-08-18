@@ -1,7 +1,17 @@
 import numpy as np
 
 
-def load_and_verify_data(x_path="data/X.npy", y_path="data/y.npy"):
+def load_and_verify_data(x_path="data/transformed_data/X.npy", y_path="data/transformed_data/y.npy"):
+    """
+    Charge les données d'images et de labels, vérifie leur intégrité et affiche des informations basiques.
+    
+    Args:
+        x_path (str): Chemin vers le fichier .npy contenant les images.
+        y_path (str): Chemin vers le fichier .npy contenant les labels.
+    
+    Returns:
+        None
+    """
     try:
         # Charger les données
         X = np.load(x_path)

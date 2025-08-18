@@ -5,11 +5,11 @@ import numpy as np
 from PIL import Image
 from tqdm import tqdm
 from utils import pil_to_array
+from config import IMG_SIZE
 
 # Paramètres
-IMG_SIZE = (64, 64)  # Taille à laquelle on redimensionne toutes les images
-CSV_PATH = "data/cat_dog.csv"  # Chemin du fichier CSV
-IMG_DIR = "data/cat_dog"  # Dossier contenant les images
+CSV_PATH = "data/raw_data/cat_dog.csv"  # Chemin du fichier CSV
+IMG_DIR = "data/raw_data/cat_dog"  # Dossier contenant les images
 # Permet de limiter le nombre d'images pour des tests rapides (mettre None pour tout traiter)
 LIMIT = int(os.getenv("LIMIT", "0")) or None
 
@@ -31,7 +31,7 @@ y = []  # Labels (0 = dog, 1 = cat)
 # row: une Series contenant les données de la ligne (index: ['image', 'labels'])
 for idx, row in tqdm(df.iterrows(), total=len(df), desc="Traitement des images"):
     img_filename = row["image"]  # Nom du fichier image
-    label = row["labels"]  # Label (0 = dog, 1 = cat)
+    label = row["labels"]  # Label (1 = dog, 0 = cat)
     img_path = osp.join(IMG_DIR, img_filename)
     try:
         # a. Ouvrir l'image
@@ -61,11 +61,11 @@ print(f"Exemple de labels: {np.unique(y, return_counts=True)}")
 
 def save_arrays(x_out="data/X.npy", y_out="data/y.npy"):
     """Sauvegarde les tableaux X et y dans des fichiers .npy.
-    
+
     Args:
         x_out (str): Chemin du fichier de sortie pour les images.
         y_out (str): Chemin du fichier de sortie pour les labels.
-    
+
     Returns:
         None
     """

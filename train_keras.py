@@ -4,6 +4,7 @@ import keras
 from keras import layers
 from sklearn.model_selection import train_test_split
 from keras.callbacks import LambdaCallback
+from data.config import IMG_SIZE
 
 
 def load_data(x_path="data/transformed_data/X.npy", y_path="data/transformed_data/y.npy"):
@@ -79,8 +80,21 @@ def main():
     X_train, X_test, y_train, y_test = split_data(X, y)
 
     # 3. Définir le modèle
-    # X_train.shape[1:]: forme des images d'entrée (hauteur, largeur, canaux)
-    model = build_model(input_shape=X_train.shape[1:])
+    # On préfère utiliser la forme réelle des données si disponibles (X_train.shape[1:]).
+    # Sinon, on construit l'input_shape à partir de IMG_SIZE et on suppose 3 canaux RGB.
+    if X_train is not None and X_train.ndim == 4:
+        input_shape = X_train.shape[1:]
+    else:
+        # IMG_SIZE peut être (width, height) ou (height, width) selon l'usage —
+        # la convention la plus sûre ici est d'interpréter comme (height, width) si possible.
+        try:
+            h, w = IMG_SIZE
+        except Exception:
+            # si IMG_SIZE mal défini, tomber en défaut raisonnable
+            h, w = 128, 128
+        input_shape = (h, w, 3)
+
+    model = build_model(input_shape=input_shape)
 
     # 4-5. Entraîner le modèle et valider
 

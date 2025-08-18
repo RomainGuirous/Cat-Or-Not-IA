@@ -1,11 +1,12 @@
 from PIL import Image
 import numpy as np
+from data.config import IMG_SIZE
 
 # Fonction utilitaire de prétraitement d'image qui reproduit exactement la logique de prepare_data.py
 # (conversion en RGB, redimensionnement, puis division par 255.0)
 
 
-def pil_to_array(pil_img, size=(64, 64)):
+def pil_to_array(pil_img, size=IMG_SIZE):
     """Convertit une PIL.Image en tableau numpy normalisé (H, W, 3).
 
     Le comportement suit prepare_data.py :
@@ -34,7 +35,7 @@ def pil_to_array(pil_img, size=(64, 64)):
     return arr
 
 
-def load_and_preprocess(path, size=(64, 64)):
+def load_and_preprocess(path, size=IMG_SIZE):
     """Ouvre une image depuis disque et la prétraite en utilisant pil_to_array.
 
     Args:

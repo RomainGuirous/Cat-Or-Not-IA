@@ -4,14 +4,26 @@ import pandas as pd
 import numpy as np
 from PIL import Image
 from tqdm import tqdm
-from utils import pil_to_array
-from config import IMG_SIZE
+from data.utils import pil_to_array
+from data.config import IMG_SIZE, SAMPLE_LIMIT
 
 # Paramètres
 CSV_PATH = "data/raw_data/cat_dog.csv"  # Chemin du fichier CSV
 IMG_DIR = "data/raw_data/cat_dog"  # Dossier contenant les images
+
 # Permet de limiter le nombre d'images pour des tests rapides (mettre None pour tout traiter)
-LIMIT = int(os.getenv("LIMIT", "0")) or None
+
+# _env_limit correpond à l'entrée dans le terminal (ou dans le fichier .env)
+# pour se faire: LIMIT=100 python prepare_data.py (ou LIMIT=100 run_all.sh)
+_env_limit = os.getenv("LIMIT")
+if _env_limit is not None:
+    try:
+        # os.getenv retourne une chaîne de caractères, on la convertit en entier
+        LIMIT = int(_env_limit)
+    except Exception:
+        LIMIT = SAMPLE_LIMIT
+else:
+    LIMIT = SAMPLE_LIMIT
 
 # 1. Lire le CSV
 # On utilise pandas pour charger le fichier CSV qui contient les chemins des images et leur label (cat ou dog)
